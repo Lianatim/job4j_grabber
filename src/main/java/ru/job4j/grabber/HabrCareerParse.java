@@ -1,4 +1,4 @@
-package ru.job4j.quartz;
+package ru.job4j.grabber;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -17,7 +17,7 @@ public class HabrCareerParse {
     private static final int COUNT_PAGE = 5;
 
     public static void main(String[] args) throws IOException {
-        for (int i = 0; i < COUNT_PAGE; i++) {
+        for (int i = 1; i <= COUNT_PAGE; i++) {
             Connection connection = Jsoup.connect(String.format("%s?page=%d", PAGE_LINK, i));
             Document document = connection.get();
             Elements rows = document.select(".vacancy-card__inner");
