@@ -28,9 +28,21 @@ public class HabrCareerParse {
                 Element dateElementFull = dateElement.child(0);
                 String vacancyName = titleElement.text();
                 String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
+                String description = new HabrCareerParse().retrieveDescription(link);
                 String dateFull = dateElementFull.attr("datetime");
-                System.out.printf("%s %s %s %n", vacancyName, link, dateFull);
+                System.out.printf("%s %s %s %s%n", vacancyName, link, dateFull, description);
             });
+        }
+    }
+
+    private String retrieveDescription(String link) {
+        Connection connection = Jsoup.connect(link);
+        try {
+            Document document = connection.get();
+            Elements rows = document.select(".style-ugc");
+            return rows.text();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
