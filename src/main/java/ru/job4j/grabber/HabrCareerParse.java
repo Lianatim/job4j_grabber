@@ -14,13 +14,13 @@ import java.util.List;
 
 public class HabrCareerParse implements Parse {
 
-    private final DateTimeParser dateTimeParser;
-
     private static final String SOURCE_LINK = "https://career.habr.com";
 
     private static final String PAGE_LINK = String.format("%s/vacancies/java_developer", SOURCE_LINK);
 
     private static final int COUNT_PAGE = 5;
+
+    private final DateTimeParser dateTimeParser;
 
     public HabrCareerParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
@@ -44,20 +44,22 @@ public class HabrCareerParse implements Parse {
             Connection connection = Jsoup.connect(String.format("%s%d", link, i));
             Document document = connection.get();
             Elements rows = document.select(".vacancy-card__inner");
-            rows.forEach(row -> {
-                Element titleElement = row.select(".vacancy-card__title").first();
-                Element linkElement = titleElement.child(0);
-                Element dateElement = row.select(".vacancy-card__date").first();
-                Element dateElementFull = dateElement.child(0);
-                String vacancyName = titleElement.text();
-                String linkVacancy = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
-                String description = retrieveDescription(linkVacancy);
-                String dateFull = dateElementFull.attr("datetime");
-                LocalDateTime dateTime = dateTimeParser.parse(dateFull);
-                System.out.printf("%s %s %s %s%n", vacancyName, linkVacancy, dateFull, description);
-                post.add(new Post(vacancyName, linkVacancy, description, dateTime));
-            });
+            rows.forEach(row -> post.add(parseElement(row)));
         }
         return post;
+    }
+
+    private Post parseElement(Element element) {
+        Element titleElement = element.select(".vacancy-card__title").first();
+        Element linkElement = titleElement.child(0);
+        Element dateElement = element.select(".vacancy-card__date").first();
+        Element dateElementFull = dateElement.child(0);
+        String vacancyName = titleElement.text();
+        String linkVacancy = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));
+        String description = retrieveDescription(linkVacancy);
+        String dateFull = dateElementFull.attr("datetime");
+        LocalDateTime dateTime = dateTimeParser.parse(dateFull);
+        System.out.printf("%s %s %s %s%n", vacancyName, linkVacancy, dateFull, description);
+        return new Post(vacancyName, linkVacancy, description, dateTime);
     }
 }
