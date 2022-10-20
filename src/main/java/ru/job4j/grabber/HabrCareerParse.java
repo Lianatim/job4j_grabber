@@ -62,4 +62,5 @@ public class HabrCareerParse implements Parse {
         System.out.printf("%s %s %s %s%n", vacancyName, linkVacancy, dateFull, description);
         return new Post(vacancyName, linkVacancy, description, dateTime);
     }
+
 }
