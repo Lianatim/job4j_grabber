@@ -92,11 +92,11 @@ public class PsqlStore implements Store, AutoCloseable {
     public static void main(String[] args) {
         Properties properties = load();
         PsqlStore psqlStore = new PsqlStore(properties);
-        Post post = new Post("Team Lead Java разработки", "https://career.habr.com/vacancies/1000112410",
-                "Наша команда в поисках Team Lead Java Developer. Мы делаем лучшую платежную систему для корпоративных клиентов Сбера.",
+        Post post = new Post("Главный инженер по Java разработке", "https://career.habr.com/vacancies/1000112408",
+                "АС «Единая Система Аутентификации» (далее просто ЕСА) — это высоконагруженная система.",
                 LocalDateTime.now());
         psqlStore.save(post);
-        psqlStore.findById(post.getId());
+        System.out.println(psqlStore.findById(post.getId()));
     }
 
     private static Properties load() {
