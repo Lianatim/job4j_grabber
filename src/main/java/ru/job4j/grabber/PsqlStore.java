@@ -26,7 +26,8 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public void save(Post post) {
-        try (PreparedStatement statement = cnn.prepareStatement("insert into post(name, link, text, created) values (?, ?, ?, ?)",
+        try (PreparedStatement statement = cnn.prepareStatement(
+                "insert into post(name, link, text, created) values (?, ?, ?, ?) on conflict (link) do nothing",
                 Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getLink());
@@ -91,12 +92,15 @@ public class PsqlStore implements Store, AutoCloseable {
 
     public static void main(String[] args) {
         Properties properties = load();
-        PsqlStore psqlStore = new PsqlStore(properties);
-        Post post = new Post("Главный инженер по Java разработке", "https://career.habr.com/vacancies/1000112408",
-                "АС «Единая Система Аутентификации» (далее просто ЕСА) — это высоконагруженная система.",
-                LocalDateTime.now());
-        psqlStore.save(post);
-        System.out.println(psqlStore.findById(post.getId()));
+        try (PsqlStore psqlStore = new PsqlStore(properties)) {
+            Post post = new Post("Главный инженер по Java разработке", "https://career.habr.com/vacancies/1000112408",
+                    "АС «Единая Система Аутентификации» (далее просто ЕСА) — это высоконагруженная система.",
+                    LocalDateTime.now());
+            psqlStore.save(post);
+            System.out.println(psqlStore.findById(post.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static Properties load() {
