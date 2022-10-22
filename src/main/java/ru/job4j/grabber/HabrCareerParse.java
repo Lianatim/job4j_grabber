@@ -16,7 +16,7 @@ public class HabrCareerParse implements Parse {
 
     private static final String SOURCE_LINK = "https://career.habr.com";
 
-    private static final int COUNT_PAGE = 1;
+    private static final int COUNT_PAGE = 5;
 
     private final DateTimeParser dateTimeParser;
 
