@@ -64,7 +64,7 @@ public class Grabber implements Grab {
                 parse.list(PAGE_LINK)
                         .forEach((store::save));
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("Error when parsing the page");
             }
         }
     }
