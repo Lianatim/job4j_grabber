@@ -61,10 +61,9 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             try {
-                parse.list(PAGE_LINK)
-                        .forEach((store::save));
+                parse.list(PAGE_LINK).forEach((store::save));
             } catch (IOException e) {
-                throw new IllegalArgumentException("Error when parsing the page");
+                e.printStackTrace();
             }
         }
     }
